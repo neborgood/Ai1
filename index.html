@@ -283,4 +283,37 @@
             } catch (error) {
                 aiMessageElement.innerText = "Error: System resources overloaded.";
                 logDebug(`GENERATION ERROR: ${error.message || error}`);
+            } finally {
+                userInput.disabled = false;
+                sendBtn.disabled = false;
+                userInput.focus();
             }
+        }
+
+        function appendMessage(text, sender) {
+            const msg = document.createElement("div");
+            msg.classList.add("message", sender);
+            msg.innerText = text;
+            chatContainer.appendChild(msg);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            return msg;
+        }
+
+        sendBtn.addEventListener("click", sendMessage);
+        userInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("sw.js")
+                .then(() => console.log("Service Worker Registered"))
+                .catch(err => console.error("SW Registration Failed", err));
+        }
+
+        initEngine();
+    </script>
+</body>
+</html>
